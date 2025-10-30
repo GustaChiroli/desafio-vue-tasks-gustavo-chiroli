@@ -1,12 +1,14 @@
 <template>
   <v-container fluid class="pa-8 d-flex justify-center">
     <v-snackbar-queue v-model ="messages" :color="colorString" location="top center"></v-snackbar-queue>
-    <v-card class="pa-6" width="800" elevation="10" rounded="xl">
+    <v-card class="pa-6 custom-card"  width="800" elevation="10" rounded="xl">
       <v-card-title
-        class="text-h5 font-weight-bold d-flex justify-space-between align-center"
+        class="text-h5 font-weight-bold d-flex justify-space-between align-center custom-card-title"
       >
         <div class="d-flex align-center justify-space-between flex-column flex-md-row" style="width: 100%">
-          📝 My To-Do List
+          <div class="text-h6 font-weight-bold color--primary">
+            📝 My To-Do List
+          </div>
           <v-btn color="primary" rounded="lg" class="mt-md-0 mt-4" @click="dialog = true">
             <v-icon start>mdi-plus</v-icon>
             Add Task
@@ -214,6 +216,15 @@ const headers = [
   word-break: break-word;        
   overflow-wrap: break-word;    
   min-width: 50px;   
+}
+
+.custom-card {
+  background-color: #f3f7ff !important; /* força cor de fundo */
+  color: #000 !important; /* força cor do texto */
+}
+
+.custom-card-title {
+  color: #000 !important; /* força cor do título */
 }
 .btn-responsive {
   font-size: 1rem; 
