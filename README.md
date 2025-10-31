@@ -15,5 +15,5 @@ Tecnologias utilizadas:
 - Pinia
     - Utilizado para fazer gerenciamento de estado.
 - Node v22.12.0
-
+Fiz o possivel para deixar a tabela responsiva(até retirei o id em telas de celular, reorganizei botões, etc...), mas no final acabei percebendo que fazer em uma tabela talvez não tenha sido a melhor escolha
 Utilizei a arquitetura padrão do Vue, acredito que se aproxima de um MVC
