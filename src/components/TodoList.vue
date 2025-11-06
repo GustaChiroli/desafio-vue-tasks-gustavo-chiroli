@@ -5,14 +5,11 @@
       <v-card-title
         class="text-h5 font-weight-bold d-flex justify-space-between align-center custom-card-title"
       >
-        <div class="d-flex align-center justify-space-between flex-column flex-md-row" style="width: 100%">
+        <div class="d-flex align-center justify-center flex-column flex-md-row" style="width: 100%">
           <div class="text-h6 font-weight-bold color--primary">
             📝 My To-Do List
           </div>
-          <v-btn color="primary" rounded="lg" class="mt-md-0 mt-4" @click="dialog = true">
-            <v-icon start>mdi-plus</v-icon>
-            Add Task
-          </v-btn>
+          
         </div>
       </v-card-title>
       <v-row class="mt-4" justify="center">
@@ -51,59 +48,97 @@
         :task="currentTask"
         @delete-task="removeTask" />
 
-      <v-data-table
-        :headers="headers"
-        headers-align="center"
-        :items="filteredTasks"
-        item-key="id"
-        class="elevation-1 mt-6"
-        dense
-        disable-sort
-      >
-        <template #header.id>
-          <div class="d-none d-sm-flex">ID</div>
-        </template>
-
-        <template #item.done="{ item }">
-          <div class="d-flex justify-center">
-            <v-checkbox
-              v-model="item.done"
-              color="primary"
-              hide-details
-              @change="store.setTasks"
-            />
-
-          </div>
-        </template>
-        <template #item.id="{ item }">
-          <div class="d-none d-sm-flex break-word">{{ item.id }}</div>
-        </template>
-        <template #item.title="{ item }">
-          <div class="break-word">{{ item.title }}</div>
-        </template>
-
-        <template #item.description="{ item }">
-          <div class="break-word">{{ item.description }}</div>
-        </template>
-
-        <template #item.actions="{ item }">
-          <v-btn icon color="secondary"class="rounded-lg mr-sm-1" size="small" @click="openEditDialog(item)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon color="error"class="rounded-lg" size="small" @click="openDeleteDialog(item)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </template>
-
-        <template #no-data>
-          <v-alert type="info">No tasks added yet</v-alert>
-        </template>
-      </v-data-table>
-
-      <v-divider class="my-4" />
+      <v-divider class="mt-4 mb-5" />
       <div class="text-center text-body-2 text-grey">
         {{ remainingTasks }} task{{ remainingTasks !== 1 ? "s" : "" }} remaining
       </div>
+      <v-row class="mt-6" dense>
+        <v-col cols="12" sm="6" md="4">
+          <v-card
+            class="pa-6 d-flex align-center justify-center add-task-card"
+            elevation="6"
+            rounded="lg"
+            @click="dialog = true"
+          >
+            <v-icon size="64" color="primary">mdi-plus-circle-outline</v-icon>
+          </v-card>
+        </v-col>
+
+        <v-col
+          v-for="task in filteredTasks"
+          :key="task.id"
+          cols="12"
+          sm="6"
+          md="4"
+        >
+          <v-card
+            class="pa-4 task-card d-flex flex-column"
+            :class="{ 'task-done': task.done }"
+            elevation="6"
+            rounded="lg"
+          >
+            <div
+              class="status-bar"
+              :class="task.done ? 'status-done' : 'status-pending'"
+            ></div>
+            <div class="flex-grow-1">
+              <v-row justify="center" align="center">
+                <v-col cols="9" justify="center" align="start">
+                  <div class="text-subtitle-1 font-weight-medium break-word task-title">
+                    {{ task.title }}
+                  </div>
+                  
+                </v-col >
+                <v-col cols="3">
+                  <v-checkbox
+                  v-model="task.done"
+                    color="primary"
+                    hide-details
+                    @change="store.setTasks"
+                    />
+                </v-col>
+                      
+              </v-row>
+              <v-row>
+                        
+                <div class="text-body-2 px-4 py-0 text-grey task-description">
+                  {{ task.description }}
+                </div>
+              </v-row>
+
+            </div>
+            <v-row class="py-2a" style="height: 100%;" justify="end" align="end">
+              <v-col cols="6" class="pa-1">
+                <v-btn
+                  color="secondary"
+                  block
+                  class="rounded-lg"
+                  @click="openEditDialog(task)"
+                  :disabled="task.done"
+                >
+                  <v-icon start>mdi-pencil</v-icon>
+                  Edit
+                </v-btn>
+              </v-col>
+
+              <v-col cols="6" class="pa-1">
+                <v-btn
+                  color="error"
+                  block
+                  class="rounded-lg"
+                  @click="openDeleteDialog(task)"
+                  :disabled="task.done"
+                >
+                  <v-icon start>mdi-delete</v-icon>
+                  Delete
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-divider class="my-4" />
+      
     </v-card>
     
   </v-container>
@@ -112,13 +147,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useTaskStore } from "@/stores/taskStore";
-import { useLoadingStore } from "@/stores/loadingStore";
 import AddTaskDialog from "./AddTaskDialog.vue";
 import EditTaskDialog from "./EditTaskDialog.vue";
 import DeleteTaskDialog from "./DeleteTaskDialog.vue";
 
 const store = useTaskStore();
-const loadingStore = useLoadingStore();
 
 interface Task {
   id: number;
@@ -196,6 +229,82 @@ const headers = [
 </script>
 
 <style scoped>
+.add-task-card {
+  cursor: pointer;
+  background: #e3f2fd; /* azul clarinho */
+  border: 2px dashed #1976d2; /* borda tracejada */
+  transition: all 0.2s ease;
+  min-height: 250px;
+}
+
+.add-task-card:hover {
+  background: #bbdefb;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 14px rgba(25, 118, 210, 0.2);
+}
+
+.task-title {
+  font-weight: 600;
+  font-size: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.task-description {
+  color: #666;
+  font-size: 0.875rem;
+  display: -webkit-box;
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.task-card {
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 250px;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+/* Faixa superior */
+.status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Cores da faixa */
+.status-pending {
+  background-color: #1976d2; 
+}
+
+.status-done {
+  background-color: #9e9e9e; 
+}
+
+.task-done {
+  opacity: 0.8;
+  background-color: #f8f8f8;
+}
+
 .v-card {
   background: linear-gradient(145deg, #ffffff, #f3f7ff);
 }
@@ -219,12 +328,12 @@ const headers = [
 }
 
 .custom-card {
-  background-color: #f3f7ff !important; /* força cor de fundo */
-  color: #000 !important; /* força cor do texto */
+  background-color: #f3f7ff !important; 
+  color: #000 !important;
 }
 
 .custom-card-title {
-  color: #000 !important; /* força cor do título */
+  color: #000 !important; 
 }
 .btn-responsive {
   font-size: 1rem; 

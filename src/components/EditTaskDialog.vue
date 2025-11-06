@@ -63,14 +63,20 @@ const closeDialog = () => {
   emit("update:modelValue", false);
 };
 
+const validation = () => {
+  return editedTitle.value.trim().length > 0 && editedDescription.value.trim().length > 0;
+}
+
 const saveTasks = () => {
-  if (editedTitle.value.trim()) {
+  if (validation()) {
     emit("update-task", {
       id: props.task.id,
       title: editedTitle.value.trim(),
       description: editedDescription.value.trim(),
     });
     closeDialog();
+  } else {
+    alert("Please fill in both the title and description.");
   }
 };
 </script>

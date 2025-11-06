@@ -53,10 +53,18 @@ const closeDialog = () => {
 
 };
 
+const validation = () => {
+  return title.value.trim().length > 0 && description.value.trim().length > 0;
+}
+
 const handleAddTask = () => {
-  if (title.value.trim()) {
+  if (validation()) {
     emit("add-task", title.value, description.value);
+    title.value = "";
+    description.value = "";
     closeDialog();
+  } else {
+    alert("Please fill in both the title and description.");
   }
 };
 </script>
