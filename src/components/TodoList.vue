@@ -76,6 +76,7 @@
             :class="{ 'task-done': task.done }"
             elevation="6"
             rounded="lg"
+            theme="light"
           >
             <div
               class="status-bar"
@@ -84,7 +85,7 @@
             <div class="flex-grow-1">
               <v-row justify="center" align="center">
                 <v-col cols="9" justify="center" align="start">
-                  <div class="text-subtitle-1 font-weight-medium break-word task-title">
+                  <div class="text-subtitle-1 font-weight-medium break-word task-title color-black">
                     {{ task.title }}
                   </div>
                   
